@@ -34,12 +34,6 @@ const getPostComments = async (postId: string) => {
   const comments : string[] = [];
   const more: string[][] = [];
 
-
-
-//   res[1].data.children.forEach((child: RedditChild) => {
-//     extractComments(child, comments, more);
-//   });
-
   return [ comments, more ];
 };
 

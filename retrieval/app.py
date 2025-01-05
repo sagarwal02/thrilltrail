@@ -6,12 +6,16 @@ from dotenv import load_dotenv
 import os
 import faiss
 from sentence_transformers import SentenceTransformer
+import openai
+import json
 
 load_dotenv()
 
 reddit = praw.Reddit(client_id=os.environ['REDDIT_CLIENT_ID'], 
                      client_secret=os.environ['REDDIT_CLIENT_SECRET'],
                      user_agent="crawler")
+
+openai.api_key = os.environ["OPENAI_KEY"]
 
 model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
 
@@ -56,16 +60,74 @@ def find_posts():
     for post in top_posts:
         all_comments.extend(retrieve_comments(post))
     
-    return jsonify({"posts": top_posts, "comments": all_comments})
+    return jsonify({"posts": top_posts, "comments": all_comments, "locations": generate_response(query,all_comments)})
 
 def retrieve_comments(postId):
     submission = reddit.submission(postId)
     comments = []
     for top_comment in submission.comments:
         if len(comments) < 5:
-            comments.append(top_comment.body)
+            comments.append((top_comment.body, submission.url))
     return comments
 
+def sanitize_unescaped_quotes(s: str, strict=False) -> dict:
+    js_str = s
+    prev_pos = -1
+    cur_pos = 0
+    while cur_pos > prev_pos:
+        prev_pos = cur_pos
+        try:
+            return json.loads(js_str, strict=strict)
+        except json.JSONDecodeError as err:
+            cur_pos = err.pos
+            if cur_pos <= prev_pos:
+                raise err
+        prev_quote_index = js_str.rfind("'", 0, cur_pos)
+        js_str = js_str[:prev_quote_index] + '\\' + js_str[prev_quote_index:]
+
+
+def generate_response(query, comments):
+    comments = "\n".join([', '.join(comment) for comment in comments])
     
+    prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. Make sure there are at least 5-10 locations. Make sure your entire response can be covered within the json output. Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"}, ...]}"
 
+    response = openai.chat.completions.create(
+        model="gpt-4o",
+        messages=[
+            {
+            "role": "system",
+            "content": [
+                {
+                "text": prompt,
+                "type": "text"
+                }
+            ]
+            },
+            {
+            "role": "user",
+            "content": [
+                {
+                "type": "text",
+                "text": comments
+                }
+            ]
+            }
+        ],
+        temperature=1,
+        max_tokens=1024,
+        top_p=1,
+        frequency_penalty=0,
+        presence_penalty=0,
+        response_format={
+            "type": "json_object"
+        }
+    )
+    print(response)
+    try:
+        json_resp = sanitize_unescaped_quotes(response.choices[0].message.content)
+        
+    except Exception as e:
+        print(e)
+        json_resp = None
 
+    return json_resp['results'] 

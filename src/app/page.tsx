@@ -39,7 +39,7 @@ interface RedditChild {
     // });
     console.log(process.env.NODE_ENV)
 
-    const posts = await fetch("http://127.0.0.1:5000/search", {
+    const search = await fetch("http://127.0.0.1:5000/search", {
       method: "POST",
       headers: {
         "Content-Type": "application/json"
@@ -47,34 +47,7 @@ interface RedditChild {
       body: JSON.stringify({"query": searchQuery})
     }).then((res) => res.json());
 
-    const postIds = posts["posts"];
-
-    console.log(postIds)
-    const comments : string[] = []; 
-    for (let post of postIds){
-      const additions = await fetch("/api/reddit?postId=" + post).then((response) => response.json())
-      comments.concat(additions);
-    }
-
-    console.log(comments);
-
-    // const comments = await fetch("/api/reddit?postId=" + searchQuery.split(" ").join("+")+ "&limit=10").then((response) => response.json());
-
-
-    // const places = await fetch("http://127.0.0.1:5000/extract", {
-    //   method: "POST",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //   },
-    //   body: JSON.stringify({"query": searchQuery}),
-    // }).then((response) => response.json())
-
-    // const posts = await fetch("https://www.reddit.com/search.json?q=" + searchQuery.split(" ").join("+") + "&limit=10").then((response) => response.json());
-
-    // let comments = [];
-
-
-    // console.log(posts);
+    console.log(search["locations"])
 
     // Mock results
     const mockResults = [
