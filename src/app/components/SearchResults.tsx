@@ -24,6 +24,8 @@ export default function SearchResults({ place }: {place : LocationData}) {
     <CardContent className="w-full p-4">
       <h2 className="text-xl font-semibold mb-2">{place.name}</h2>
       <p className="text-sm text-gray-600 mb-2">{place.address}</p>
+      <p className="text-sm text-gray-600 mb-2">{place.explanation}</p>
+      
       <div className="flex items-center">
         {[0,1,2,3,4].map((i) => (
           <Star
@@ -35,7 +37,7 @@ export default function SearchResults({ place }: {place : LocationData}) {
       </div>
       <Popover>
       <PopoverTrigger>
-        
+
         <Button variant="outline">Citation</Button>
         
       </PopoverTrigger>

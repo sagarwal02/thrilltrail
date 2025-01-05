@@ -33,7 +33,7 @@ def find_posts():
 
     query = data["query"]
 
-    results = reddit.subreddit("all").search(query, limit=100)
+    results = reddit.subreddit("all").search(query, limit=50)
     ids = []
     titles = []
     for post in results:
@@ -89,7 +89,7 @@ def sanitize_unescaped_quotes(s: str, strict=False) -> dict:
 def generate_response(query, comments):
     comments = "\n".join([', '.join(comment) for comment in comments])
     
-    prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. The locations you pick must be as accurate as possible according to the user query (don't just suggest something because it's positive, put careful thought in the suggestion). Do not repeat any locations. Feel free to suggest an event as a location, just make sure it has a location associated with it. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. Make sure there are at least 5-10 locations. Make sure your entire response can be covered within the json output. Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"}, ...]}"
+    prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. The locations you pick must be as accurate as possible according to the user query (don't just suggest something because it's positive, put careful thought in the suggestion). Do not repeat any locations. Feel free to suggest an event as a location, just make sure it has a location associated with it. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. Make sure there are at least 5-10 locations. Provide a brief explanation for why you picked these locations (e.g. maybe point out some of the fun activities you can partake in at that location). Make sure your entire response can be covered within the json output. Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"} \"explanation\": \"EXPLANATION_1\", ...]}"
 
     response = openai.chat.completions.create(
         model="gpt-4o",
@@ -114,7 +114,7 @@ def generate_response(query, comments):
             }
         ],
         temperature=1,
-        max_tokens=1024,
+        max_tokens=2048,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0,

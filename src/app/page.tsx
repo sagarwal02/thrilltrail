@@ -14,13 +14,14 @@ export interface LocationData {
   rating: number,
   comment: string,
   commentUrl: string,
+  explanation: string
 }
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const [isThinking, setIsThinking] = useState(false)
   const [results, setResults] = useState<LocationData[]>([])
-  
+
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery)
     setIsThinking(true)
@@ -43,7 +44,7 @@ export default function Home() {
       const mapData = await getPlaceData(location.location_name, location.address);
       
       if (mapData){
-        locations.push({...mapData, comment: location.comment, commentUrl: location.commentUrl});
+        locations.push({...mapData, comment: location.comment, commentUrl: location.commentUrl, explanation: location.explanation});
       }
       
     }
