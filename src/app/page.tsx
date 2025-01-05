@@ -5,25 +5,20 @@ import SearchInput from '@/app/components/SearchInput'
 import ThinkingState from '@/app/components/Thinking'
 import SearchResults from '@/app/components/SearchResults'
 import { Compass } from 'lucide-react'
-import {getAllComments} from "@/app/comments"
+import { getPlaceData } from './actions'
+
+export interface LocationData {
+  name: string,
+  address: string,
+  photo: string,
+  rating: number
+}
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const [isThinking, setIsThinking] = useState(false)
-  const [results, setResults] = useState<string[]>([])
+  const [results, setResults] = useState<LocationData[]>([])
 
-
-interface RedditChild {
-  kind: string;
-  data: {
-    body?: string;
-    author?: string;
-    id?: string;
-    parent_id?: string;
-    count?: number;
-    children?: string[];
-  };
-}
 
 
 
@@ -32,11 +27,6 @@ interface RedditChild {
     setIsThinking(true)
     setResults([])
 
-    // Simulate API call
-
-    // getAllComments("lmj453").then((comments) => {
-    //   console.log(comments);
-    // });
     console.log(process.env.NODE_ENV)
 
     const search = await fetch("http://127.0.0.1:5000/search", {
@@ -49,6 +39,23 @@ interface RedditChild {
 
     console.log(search["locations"])
 
+    const locations : LocationData[] = [];
+    for (let location of search["locations"]){
+      const mapData = await getPlaceData(location.location_name, location.address);
+      
+      if (mapData){
+        console.log(mapData.rating);
+        locations.push(mapData);
+      }
+      
+      // if (mapData.results && mapData.results.length > 0){
+      //   // const place = mapData.results[0];
+        
+      //   locations.push({name: place.name, address: place.formatted_address, rating: place.rating, photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`})
+      // }
+      
+    }
+
     // Mock results
     const mockResults = [
       'Eiffel Tower, Paris: Iconic landmark with stunning city views',
@@ -56,7 +63,7 @@ interface RedditChild {
       'Great Barrier Reef, Australia: World\'s largest coral reef system',
     ]
 
-    setResults(mockResults)
+    setResults(locations)
     setIsThinking(false)
   }
 
@@ -70,7 +77,9 @@ interface RedditChild {
         <p className="text-center text-gray-600">Discover fun and exciting places to visit</p>
         <SearchInput onSearch={handleSearch} />
         {isThinking && <ThinkingState />}
-        {results.length > 0 && <SearchResults results={results} />}
+        {results.length > 0 && results.map((location) => (
+          <SearchResults place={location}/>
+        ))}
       </div>
     </main>
   )
