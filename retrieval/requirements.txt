@@ -1,0 +1,8 @@
+faiss_cpu==1.9.0.post1
+Flask==3.1.0
+Flask_Cors==5.0.0
+numpy==2.2.1
+openai==1.59.3
+praw==7.8.1
+python-dotenv==1.0.1
+sentence_transformers==3.3.1
