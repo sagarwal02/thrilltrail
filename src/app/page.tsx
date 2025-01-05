@@ -11,17 +11,16 @@ export interface LocationData {
   name: string,
   address: string,
   photo: string,
-  rating: number
+  rating: number,
+  comment: string,
+  commentUrl: string,
 }
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const [isThinking, setIsThinking] = useState(false)
   const [results, setResults] = useState<LocationData[]>([])
-
-
-
-
+  
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery)
     setIsThinking(true)
@@ -44,24 +43,10 @@ export default function Home() {
       const mapData = await getPlaceData(location.location_name, location.address);
       
       if (mapData){
-        console.log(mapData.rating);
-        locations.push(mapData);
+        locations.push({...mapData, comment: location.comment, commentUrl: location.commentUrl});
       }
       
-      // if (mapData.results && mapData.results.length > 0){
-      //   // const place = mapData.results[0];
-        
-      //   locations.push({name: place.name, address: place.formatted_address, rating: place.rating, photo: `https://maps.googleapis.com/maps/api/place/photo?maxwidth=400&photoreference=${place.photos[0].photo_reference}&key=${process.env.NEXT_PUBLIC_GOOGLE_API_KEY}`})
-      // }
-      
     }
-
-    // Mock results
-    const mockResults = [
-      'Eiffel Tower, Paris: Iconic landmark with stunning city views',
-      'Machu Picchu, Peru: Ancient Incan city in the Andes Mountains',
-      'Great Barrier Reef, Australia: World\'s largest coral reef system',
-    ]
 
     setResults(locations)
     setIsThinking(false)
@@ -84,4 +69,3 @@ export default function Home() {
     </main>
   )
 }
-
