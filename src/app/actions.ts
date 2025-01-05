@@ -1,7 +1,5 @@
 'use server'
 
-import { LocationData } from '@/app/page';
-
 export async function getPlaceData(placeName: string, address: string): Promise<any | null> {
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_API_KEY;
   if (!apiKey) {

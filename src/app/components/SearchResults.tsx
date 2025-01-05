@@ -38,7 +38,7 @@ export default function SearchResults({ place }: {place : LocationData}) {
       <Popover>
       <PopoverTrigger>
 
-        <Button variant="outline">Citation</Button>
+        <Button variant="outline">Source</Button>
         
       </PopoverTrigger>
       <PopoverContent>"{place.comment}" - Someone on <a href={place.commentUrl} style={{color: "blue"}}>Reddit</a></PopoverContent>
