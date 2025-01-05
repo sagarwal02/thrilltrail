@@ -13,6 +13,8 @@ reddit = praw.Reddit(client_id=os.environ['REDDIT_CLIENT_ID'],
                      client_secret=os.environ['REDDIT_CLIENT_SECRET'],
                      user_agent="crawler")
 
+model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+
 app = Flask(__name__)
 CORS(app, resources={r"/*": {"origins": "*"}})
 
@@ -27,14 +29,14 @@ def find_posts():
 
     query = data["query"]
 
-    results = reddit.subreddit("all").search(query, limit=None)
+    results = reddit.subreddit("all").search(query, limit=100)
     ids = []
     titles = []
     for post in results:
         titles.append(post.title)
         ids.append(post.id)
 
-    model = SentenceTransformer('sentence-transformers/all-MiniLM-L6-v2')
+    
     title_embeddings = model.encode(titles)
 
     index = faiss.IndexFlatL2(title_embeddings.shape[1]) # Create L2 distance index
@@ -47,9 +49,22 @@ def find_posts():
     faiss.normalize_L2(query_vec)
 
     distances, ann = index.search(query_vec, k=index.ntotal)
-    return list(np.array(ids)[ann[0]])
 
+    top_posts = list(np.array(ids)[ann[0]][:10])
+    all_comments = []
 
+    for post in top_posts:
+        all_comments.extend(retrieve_comments(post))
+    
+    return jsonify({"posts": top_posts, "comments": all_comments})
+
+def retrieve_comments(postId):
+    submission = reddit.submission(postId)
+    comments = []
+    for top_comment in submission.comments:
+        if len(comments) < 5:
+            comments.append(top_comment.body)
+    return comments
 
     
 

@@ -29,15 +29,16 @@ const extractComments = (child: RedditChild, comments: string[], more: string[][
 
 const getPostComments = async (postId: string) => {
 
-  const res = await fetch("https://www.reddit.com/comments/" + postId + ".json").then((response) => response.json());
+  const res = await fetch("https://www.reddit.com/comments/" + postId + ".json");
+  console.log(res);
   const comments : string[] = [];
   const more: string[][] = [];
 
 
 
-  res[1].data.children.forEach((child: RedditChild) => {
-    extractComments(child, comments, more);
-  });
+//   res[1].data.children.forEach((child: RedditChild) => {
+//     extractComments(child, comments, more);
+//   });
 
   return [ comments, more ];
 };

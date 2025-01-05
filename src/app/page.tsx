@@ -33,33 +33,31 @@ interface RedditChild {
     setResults([])
 
     // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 2000))
 
     // getAllComments("lmj453").then((comments) => {
     //   console.log(comments);
     // });
     console.log(process.env.NODE_ENV)
 
-    const posts = await fetch("https://www.reddit.com/search.json?q=" + searchQuery.split(" ").join("+") + "&sort=relevance&limit=1").then((response) => response.json());
+    const posts = await fetch("http://127.0.0.1:5000/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({"query": searchQuery})
+    }).then((res) => res.json());
 
-    console.log(posts);
+    const postIds = posts["posts"];
 
-    const postIds : string[] = [];
-    
-    posts.data.children.forEach((child: RedditChild) => {
-      switch(child.kind){
-        case 't3':
-          if (child.data.id){
-            postIds.push(child.data.id);
-          }
-      }
-    });
+    console.log(postIds)
     const comments : string[] = []; 
     for (let post of postIds){
-      comments.concat(await fetch("/api/reddit?postId=" + post).then((response) => response.json()))
+      const additions = await fetch("/api/reddit?postId=" + post).then((response) => response.json())
+      comments.concat(additions);
     }
 
     console.log(comments);
+
     // const comments = await fetch("/api/reddit?postId=" + searchQuery.split(" ").join("+")+ "&limit=10").then((response) => response.json());
 
 
