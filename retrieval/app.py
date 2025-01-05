@@ -54,21 +54,19 @@ def find_posts():
 
     distances, ann = index.search(query_vec, k=index.ntotal)
 
-    top_posts = list(np.array(ids)[ann[0]][:10])
+    top_posts = np.array(ids)[ann[0]][:10]
     all_comments = []
 
     for post in top_posts:
         all_comments.extend(retrieve_comments(post))
     
-    return jsonify({"posts": top_posts, "comments": all_comments, "locations": generate_response(query,all_comments)})
+    return jsonify({"locations": generate_response(query,all_comments)})
 
 def retrieve_comments(postId):
     submission = reddit.submission(postId)
-    comments = []
-    for top_comment in submission.comments:
-        if len(comments) < 5:
-            comments.append((top_comment.body, submission.url))
-    return comments
+    submission.comment_sort = "top"
+    submission.comments.replace_more(limit=0)
+    return [(comment.body, submission.url) for comment in submission.comments]
 
 def sanitize_unescaped_quotes(s: str, strict=False) -> dict:
     js_str = s
@@ -89,7 +87,7 @@ def sanitize_unescaped_quotes(s: str, strict=False) -> dict:
 def generate_response(query, comments):
     comments = "\n".join([', '.join(comment) for comment in comments])
     
-    prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. The locations you pick must be as accurate as possible according to the user query (don't just suggest something because it's positive, put careful thought in the suggestion). Do not repeat any locations. Feel free to suggest an event as a location, just make sure it has a location associated with it. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. You MUST pick 5-10 locations. Provide a brief explanation for why you picked these locations (e.g. maybe point out some of the fun activities you can partake in at that location). Make sure your entire response can be covered within the json output. Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"} \"explanation\": \"EXPLANATION_1\", ...]}"
+    prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. The locations you pick must be as accurate as possible according to the user query (don't just suggest something because it's positive, put careful thought in the suggestion). Do not repeat any locations. Feel free to suggest an event as a location, just make sure it has a location associated with it. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. You MUST pick 5-10 locations. Provide a brief explanation for why you picked these locations (e.g. maybe point out some of the fun activities you can partake in at that location). The locations you suggest must be in the same location as the user query. Make sure your entire response can be covered within the json output. Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"} \"explanation\": \"EXPLANATION_1\", ...]}"
 
     response = openai.chat.completions.create(
         model="gpt-4o",
@@ -113,8 +111,8 @@ def generate_response(query, comments):
             ]
             }
         ],
-        temperature=1,
-        max_tokens=2048,
+        temperature=0.5,
+        max_tokens=1500,
         top_p=1,
         frequency_penalty=0,
         presence_penalty=0,
