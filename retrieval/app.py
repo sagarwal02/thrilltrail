@@ -130,4 +130,4 @@ def generate_response(query, comments):
         print(e)
         json_resp = None
 
-    return json_resp['results'] 
+    return json_resp['results']
