@@ -1,0 +1,57 @@
+{
+    "conversation_id": "b16aee3c-23af-48d8-a8ea-92f1cb0b5697",
+    "start_time": "2025_01_04:17:06:31",
+    "llm": {
+        "name": "gpt-3.5-turbo",
+        "meta_data": {
+            "model": "gpt-3.5-turbo",
+            "api_wait": 60,
+            "api_retry": 6,
+            "model_type": "chat_models",
+            "temperature": 0.7,
+            "top_p": 1,
+            "n": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "json_depth_limit": 20
+        }
+    },
+    "participants": [
+        {
+            "name": "User",
+            "is_bot": false
+        },
+        {
+            "name": "Assistant",
+            "is_bot": true
+        }
+    ],
+    "messages": [
+        {
+            "request_timestamp": "2025_01_04:17:06:31",
+            "prompt_id": "411b2978-a306-473a-b57c-190e0ea210b8",
+            "prompt_filename": "ner.jinja",
+            "processing_task": "You are a highly intelligent and accurate geographical domain Named-entity recognition(NER) system. You take Passage as input and your task is to recognize and extract specific types of geographical domain named entities in that given passage and classify into a set of following predefined entity types:\n['LOC']Your output format is only [{'T': type of entity from predefined entity types, 'E': entity in the input text}},...,{{'branch' : Appropriate branch of the passage ,'group': Appropriate Group of the passage}] form, no other form. Don't include any text in response such as 'here are named entities..' etc, return only valid json\n\nInput: Things to do in New York City on 6th Street\nOutput:",
+            "template_metadata": {},
+            "input_prompt": {
+                "output_format": null,
+                "examples": null,
+                "text_input": "Things to do in New York City on 6th Street",
+                "description": null,
+                "labels": [
+                    "LOC"
+                ],
+                "domain": "geographical"
+            },
+            "response_text": "[{'T': 'LOC', 'E': 'New York City', 'branch': '6th Street', 'group': 'Things to do'}]",
+            "parsed_output": [
+                {
+                    "T": "LOC",
+                    "E": "New York City",
+                    "branch": "6th Street",
+                    "group": "Things to do"
+                }
+            ]
+        }
+    ]
+}

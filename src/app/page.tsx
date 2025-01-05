@@ -5,11 +5,27 @@ import SearchInput from '@/app/components/SearchInput'
 import ThinkingState from '@/app/components/Thinking'
 import SearchResults from '@/app/components/SearchResults'
 import { Compass } from 'lucide-react'
+import {getAllComments} from "@/app/comments"
 
 export default function Home() {
   const [query, setQuery] = useState('')
   const [isThinking, setIsThinking] = useState(false)
   const [results, setResults] = useState<string[]>([])
+
+
+interface RedditChild {
+  kind: string;
+  data: {
+    body?: string;
+    author?: string;
+    id?: string;
+    parent_id?: string;
+    count?: number;
+    children?: string[];
+  };
+}
+
+
 
   const handleSearch = async (searchQuery: string) => {
     setQuery(searchQuery)
@@ -18,6 +34,49 @@ export default function Home() {
 
     // Simulate API call
     await new Promise(resolve => setTimeout(resolve, 2000))
+
+    // getAllComments("lmj453").then((comments) => {
+    //   console.log(comments);
+    // });
+    console.log(process.env.NODE_ENV)
+
+    const posts = await fetch("https://www.reddit.com/search.json?q=" + searchQuery.split(" ").join("+") + "&sort=relevance&limit=1").then((response) => response.json());
+
+    console.log(posts);
+
+    const postIds : string[] = [];
+    
+    posts.data.children.forEach((child: RedditChild) => {
+      switch(child.kind){
+        case 't3':
+          if (child.data.id){
+            postIds.push(child.data.id);
+          }
+      }
+    });
+    const comments : string[] = []; 
+    for (let post of postIds){
+      comments.concat(await fetch("/api/reddit?postId=" + post).then((response) => response.json()))
+    }
+
+    console.log(comments);
+    // const comments = await fetch("/api/reddit?postId=" + searchQuery.split(" ").join("+")+ "&limit=10").then((response) => response.json());
+
+
+    // const places = await fetch("http://127.0.0.1:5000/extract", {
+    //   method: "POST",
+    //   headers: {
+    //     "Content-Type": "application/json",
+    //   },
+    //   body: JSON.stringify({"query": searchQuery}),
+    // }).then((response) => response.json())
+
+    // const posts = await fetch("https://www.reddit.com/search.json?q=" + searchQuery.split(" ").join("+") + "&limit=10").then((response) => response.json());
+
+    // let comments = [];
+
+
+    // console.log(posts);
 
     // Mock results
     const mockResults = [

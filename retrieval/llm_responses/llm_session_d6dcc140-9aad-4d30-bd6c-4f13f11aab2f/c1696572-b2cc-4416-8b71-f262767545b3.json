@@ -1,0 +1,64 @@
+{
+    "conversation_id": "d6dcc140-9aad-4d30-bd6c-4f13f11aab2f",
+    "start_time": "2025_01_04:17:22:13",
+    "llm": {
+        "name": "gpt-3.5-turbo",
+        "meta_data": {
+            "model": "gpt-3.5-turbo",
+            "api_wait": 60,
+            "api_retry": 6,
+            "model_type": "chat_models",
+            "temperature": 0.7,
+            "top_p": 1,
+            "n": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "json_depth_limit": 20
+        }
+    },
+    "participants": [
+        {
+            "name": "User",
+            "is_bot": false
+        },
+        {
+            "name": "Assistant",
+            "is_bot": true
+        }
+    ],
+    "messages": [
+        {
+            "request_timestamp": "2025_01_04:17:22:13",
+            "prompt_id": "13b0a637-3280-4ee9-aaee-3ee3a0d2022e",
+            "prompt_filename": "ner.jinja",
+            "processing_task": "You are a highly intelligent and accurate activities domain Named-entity recognition(NER) system. You take Passage as input and your task is to recognize and extract specific types of activities domain named entities in that given passage and classify into a set of following predefined entity types:\n['LOC', 'ACTIVITY']Your output format is only [{'T': type of entity from predefined entity types, 'E': entity in the input text}},...,{{'branch' : Appropriate branch of the passage ,'group': Appropriate Group of the passage}] form, no other form. Don't include any text in response such as 'here are named entities..' etc, return only valid json\n\nInput: Things to do in New York City on 6th Street\nOutput:",
+            "template_metadata": {},
+            "input_prompt": {
+                "text_input": "Things to do in New York City on 6th Street",
+                "labels": [
+                    "LOC",
+                    "ACTIVITY"
+                ],
+                "examples": null,
+                "domain": "activities",
+                "description": null,
+                "output_format": null
+            },
+            "response_text": "[{'T': 'LOC', 'E': 'New York City'}, {'T': 'LOC', 'E': '6th Street'}, {'branch': 'Activities', 'group': 'Entertainment'}]",
+            "parsed_output": [
+                {
+                    "T": "LOC",
+                    "E": "New York City"
+                },
+                {
+                    "T": "LOC",
+                    "E": "6th Street"
+                },
+                {
+                    "branch": "Activities",
+                    "group": "Entertainment"
+                }
+            ]
+        }
+    ]
+}

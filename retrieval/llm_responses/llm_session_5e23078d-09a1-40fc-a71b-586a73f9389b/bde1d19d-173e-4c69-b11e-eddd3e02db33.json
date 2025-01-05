@@ -1,0 +1,57 @@
+{
+    "conversation_id": "5e23078d-09a1-40fc-a71b-586a73f9389b",
+    "start_time": "2025_01_04:17:16:03",
+    "llm": {
+        "name": "gpt-3.5-turbo",
+        "meta_data": {
+            "model": "gpt-3.5-turbo",
+            "api_wait": 60,
+            "api_retry": 6,
+            "model_type": "chat_models",
+            "temperature": 0.7,
+            "top_p": 1,
+            "n": 1,
+            "presence_penalty": 0,
+            "frequency_penalty": 0,
+            "json_depth_limit": 20
+        }
+    },
+    "participants": [
+        {
+            "name": "User",
+            "is_bot": false
+        },
+        {
+            "name": "Assistant",
+            "is_bot": true
+        }
+    ],
+    "messages": [
+        {
+            "request_timestamp": "2025_01_04:17:16:03",
+            "prompt_id": "bf37b214-b7a9-4954-bbd8-7be388f6cea2",
+            "prompt_filename": "ner.jinja",
+            "processing_task": "You are a highly intelligent and accurate geographical domain Named-entity recognition(NER) system. You take Passage as input and your task is to recognize and extract specific types of geographical domain named entities in that given passage and classify into a set of following predefined entity types:\n['LOC']Your output format is only [{'T': type of entity from predefined entity types, 'E': entity in the input text}},...,{{'branch' : Appropriate branch of the passage ,'group': Appropriate Group of the passage}] form, no other form. Don't include any text in response such as 'here are named entities..' etc, return only valid json\n\nInput: things to do in NYC\nOutput:",
+            "template_metadata": {},
+            "input_prompt": {
+                "labels": [
+                    "LOC"
+                ],
+                "description": null,
+                "examples": null,
+                "text_input": "things to do in NYC",
+                "output_format": null,
+                "domain": "geographical"
+            },
+            "response_text": "[{'T': 'LOC', 'E': 'NYC', 'branch': 'geographical domain', 'group': 'travel'}]",
+            "parsed_output": [
+                {
+                    "T": "LOC",
+                    "E": "NYC",
+                    "branch": "geographical domain",
+                    "group": "travel"
+                }
+            ]
+        }
+    ]
+}
