@@ -30,6 +30,17 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to start s
 
 ## Demo
 
-You can check out a [a demo video]() demonstrating the pipeline in action — any feedback is greatly appreciated!
+You can check out a [a demo video](https://youtu.be/GuFV0r49SS8) demonstrating the pipeline in action — any feedback is greatly appreciated!
 
 ## Architecture
+
+## Features
+
+- [x] Faiss-based IR of relevant osts & comments from Reddit API using search query
+- [x] Google Maps API address retrieval
+- [x] GPT-4o Integration w/ cleaned JSON output
+- [x] Relevant image retrieval
+- [x] Automatic citations for LLM response
+- [x] Flask-based REST API to handle outgoing requests
+- [x] Search Animations
+- [ ] Real-time retrieval
