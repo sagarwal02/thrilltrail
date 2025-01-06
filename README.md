@@ -38,7 +38,7 @@ You can check out [a demo video](https://youtu.be/GuFV0r49SS8) demonstrating the
 
 ## Features
 
-- [x] Faiss-based IR of relevant osts & comments from Reddit API using search query
+- [x] Faiss-based IR of relevant posts & comments from Reddit API using search query
 - [x] Google Maps API address retrieval
 - [x] GPT-4o Integration w/ cleaned JSON output
 - [x] Relevant image retrieval
