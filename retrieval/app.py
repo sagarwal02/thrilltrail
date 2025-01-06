@@ -87,7 +87,6 @@ def sanitize_unescaped_quotes(s: str, strict=False) -> dict:
 
 def generate_response(query, comments):
     comments = "\n".join([', '.join(comment) for comment in comments])
-    print(comments)
     
     prompt = "You are an expert travel guide that knows all the best local attractions, restaurants, bars, etc. Given the following reddit comments and corresponding url pruned via the following user query: " + query + ", find the desired location/attraction for the user to go to. The locations you pick must be as accurate according to the user query (don't just suggest something random, put careful thought in the suggestion). Do not repeat any locations. Feel free to suggest an event as a location, just make sure it has a location associated with it. Please make sure to quote the exact comment referenced and give the addresses of the top locations you determine. Use comments that are directly related to the user's query. You MUST pick 5-10 locations. Provide a brief explanation for why you picked these locations (e.g. maybe point out some of the fun activities you can partake in at that location). The locations you suggest must be in the same location as the user query. Make sure your entire response can be covered within the json output (you have a limit of 2048 tokens). Return your response in a json format as folows: {\"results\": [{\"comment\": \"COMMENT_1\", \"commentUrl\": \"URL_1\", \"location_name\": \"LOCATION_1\", \"address\": \"ADDRESS_1\"} \"explanation\": \"EXPLANATION_1\", ...]}"
 

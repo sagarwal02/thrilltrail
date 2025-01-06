@@ -30,9 +30,11 @@ Open [http://localhost:3000](http://localhost:3000) with your browser to start s
 
 ## Demo
 
-You can check out a [a demo video](https://youtu.be/GuFV0r49SS8) demonstrating the pipeline in action — any feedback is greatly appreciated!
+You can check out [a demo video](https://youtu.be/GuFV0r49SS8) demonstrating the pipeline in action — any feedback is greatly appreciated!
 
 ## Architecture
+
+![architecture](architecture.png "ThrillTrail's architecture")
 
 ## Features
 
