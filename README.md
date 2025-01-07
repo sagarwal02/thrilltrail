@@ -4,7 +4,7 @@ My friends and I often struggle to find things to do in new cities (and sometime
 
 ## Getting Started
 
-First, make sure to install any dependcies.
+First, make sure to install any dependencies.
 
 ```bash
 npm install
